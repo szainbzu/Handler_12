@@ -8,22 +8,25 @@ import android.os.HandlerThread;
 import android.os.Looper;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
     private Button btn, btn2;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         btn = findViewById(R.id.btn);
         btn2 = findViewById(R.id.btn2);
+        final TextView txt = findViewById(R.id.textView);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 HandlerThread handlerThread = new HandlerThread("Background task");
                 handlerThread.start();
-                Handler handler = new Handler(handlerThread.getLooper());
+               final Handler handler = new Handler(handlerThread.getLooper());
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
@@ -32,10 +35,14 @@ public class MainActivity extends AppCompatActivity {
                             for(x = 1; x<100000; x++){
                                 y = x;
                             }
-                        }
-                        Toast.makeText(MainActivity.this, "Work done "+y,
-                                Toast.LENGTH_SHORT).show();
-                    }
+                        }final int w = y;
+
+                        txt.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                txt.setText("done working " +w);
+                            }
+                        });                    }
                 });
 
             }
